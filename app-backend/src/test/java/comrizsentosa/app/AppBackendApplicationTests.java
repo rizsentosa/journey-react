@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import comrizsentosa.app.dtos.TaskRequest;
 import comrizsentosa.app.dtos.TodoRequest;
-import comrizsentosa.app.models.Tasks;
-import comrizsentosa.app.models.Todos;
+import comrizsentosa.app.models.task.Tasks;
+import comrizsentosa.app.models.task.Todos;
 import comrizsentosa.app.repos.TaskRepo;
 import comrizsentosa.app.repos.TodoRepo;
 import comrizsentosa.app.services.TodoService;

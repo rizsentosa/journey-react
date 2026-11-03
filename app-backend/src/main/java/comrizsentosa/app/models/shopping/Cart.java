@@ -1,7 +1,11 @@
-package comrizsentosa.app.models;
+package comrizsentosa.app.models.shopping;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Persistent;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,22 +22,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "task_todo")
+@Table(name = "carts")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class Tasks {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Cart {
+
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
 
-  @Column(name = "title", nullable = false)
-  private String title;
+  @Column(nullable = false)
+  private Integer quantity;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "todo_id", nullable = false, referencedColumnName = "id")
-  private Todos todo;
+  @Column(name = "added_at", nullable = false)
+  private OffsetDateTime addedAt;
+
+  @Persistent
+  private Long total;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "product_id")
+  private Product product;
 }

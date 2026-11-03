@@ -5,14 +5,14 @@ import java.util.UUID;
 
 import comrizsentosa.app.exception.BadRequestException;
 import comrizsentosa.app.exception.ResourceNotFoundException;
+import comrizsentosa.app.models.task.Tasks;
+import comrizsentosa.app.models.task.Todos;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import comrizsentosa.app.dtos.TaskRequest;
 import comrizsentosa.app.dtos.TaskResponse;
-import comrizsentosa.app.models.Tasks;
-import comrizsentosa.app.models.Todos;
 import comrizsentosa.app.repos.TaskRepo;
 import comrizsentosa.app.repos.TodoRepo;
 import lombok.RequiredArgsConstructor;

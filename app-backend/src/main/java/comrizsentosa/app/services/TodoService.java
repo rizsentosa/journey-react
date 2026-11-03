@@ -17,8 +17,7 @@ import comrizsentosa.app.dtos.TodoResponse;
 import comrizsentosa.app.dtos.TodoSideBarResponse;
 import comrizsentosa.app.exception.BadRequestException;
 import comrizsentosa.app.exception.ResourceNotFoundException;
-import comrizsentosa.app.models.Tasks;
-import comrizsentosa.app.models.Todos;
+import comrizsentosa.app.models.task.Todos;
 import comrizsentosa.app.repos.TodoRepo;
 import lombok.RequiredArgsConstructor;
 

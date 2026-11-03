@@ -1,4 +1,4 @@
-package comrizsentosa.app.models;
+package comrizsentosa.app.models.task;
 
 import java.time.LocalDate;
 import java.util.List;

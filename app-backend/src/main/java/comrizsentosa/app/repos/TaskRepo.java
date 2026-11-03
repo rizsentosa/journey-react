@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import comrizsentosa.app.models.Tasks;
+import comrizsentosa.app.models.task.Tasks;
 
 public interface TaskRepo extends JpaRepository<Tasks, UUID> {
   Optional<Tasks> findById(UUID id);
