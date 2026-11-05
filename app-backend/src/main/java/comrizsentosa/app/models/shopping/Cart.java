@@ -1,9 +1,9 @@
 package comrizsentosa.app.models.shopping;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-
-import org.springframework.data.annotation.Persistent;
+import jakarta.persistence.Transient;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,8 +40,8 @@ public class Cart {
   @Column(name = "added_at", nullable = false)
   private OffsetDateTime addedAt;
 
-  @Persistent
-  private Long total;
+  @Transient
+  private BigDecimal total;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "product_id")

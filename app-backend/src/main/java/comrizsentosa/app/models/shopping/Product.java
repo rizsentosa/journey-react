@@ -51,13 +51,13 @@ public class Product {
   @Column(name = "is_active")
   private Boolean isActive;
 
-  @Column(name = "created_at")
+  @Column(name = "created_at", insertable = false, updatable = false)
   private OffsetDateTime createdAt;
 
-  @Column(name = "created_at")
+  @Column(name = "created_at", insertable = false, updatable = false)
   private OffsetDateTime updatedAt;
 
-  @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
   private List<Cart> cartItems;
 
   @PrePersist

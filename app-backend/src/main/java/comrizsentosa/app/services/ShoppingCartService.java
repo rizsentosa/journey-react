@@ -1,8 +1,10 @@
 package comrizsentosa.app.services;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,21 +41,21 @@ public class ShoppingCartService {
         .build();
 
     product = productRepo.save(product);
-    ProductShoppingResponse object = new ProductShoppingResponse(
-        product.getId().toString(),
-        product.getName(),
-        product.getStockQuantity(),
-        product.getImageUrl(),
-        product.getIsActive(),
-        product.getPrice(),
-        product.getCreatedAt());
+    ProductShoppingResponse object = ProductShoppingResponse.builder()
+        .id(product.getId().toString())
+        .name(product.getName())
+        .stockQuantity(product.getStockQuantity())
+        .imageUrl(product.getImageUrl())
+        .isActive(product.getIsActive())
+        .price(product.getPrice())
+        .createdDate(product.getCreatedAt())
+        .build();
 
     return object;
   }
 
   @Transactional
   public ProductShoppingResponse updateProduct(String id, ProductShoppingRequest request) {
-    UUID uuid = parseUUID(id);
     Product product = getProductById(id);
 
     product.setName(request.name());
@@ -62,14 +64,15 @@ public class ShoppingCartService {
     product.setImageUrl(request.imageUrl());
 
     Product saved = productRepo.save(product);
-    ProductShoppingResponse object = new ProductShoppingResponse(
-        saved.getId().toString(),
-        saved.getName(),
-        saved.getStockQuantity(),
-        saved.getImageUrl(),
-        saved.getIsActive(),
-        saved.getPrice(),
-        saved.getCreatedAt());
+    ProductShoppingResponse object = ProductShoppingResponse.builder()
+        .id(saved.getId().toString())
+        .name(saved.getName())
+        .stockQuantity(saved.getStockQuantity())
+        .imageUrl(saved.getImageUrl())
+        .isActive(saved.getIsActive())
+        .price(saved.getPrice())
+        .createdDate(saved.getCreatedAt())
+        .build();
 
     return object;
   }
@@ -83,26 +86,82 @@ public class ShoppingCartService {
   @Transactional(readOnly = true)
   public ProductShoppingResponse findOneProduct(String id) {
     Product product = getProductById(id);
-    ProductShoppingResponse object = new ProductShoppingResponse(
-        product.getId().toString(),
-        product.getName(),
-        product.getStockQuantity(),
-        product.getImageUrl(),
-        product.getIsActive(),
-        product.getPrice(),
-        product.getCreatedAt());
+    ProductShoppingResponse object = null;
+
+    if (product.getCartItems().isEmpty()) {
+      object = ProductShoppingResponse.builder()
+          .id(product.getId().toString())
+          .name(product.getName())
+          .stockQuantity(product.getStockQuantity())
+          .imageUrl(product.getImageUrl())
+          .isActive(product.getIsActive())
+          .price(product.getPrice())
+          .createdDate(product.getCreatedAt())
+          .build();
+      return object;
+    }
+
+    object = ProductShoppingResponse.builder()
+        .id(product.getId().toString())
+        .name(product.getName())
+        .stockQuantity(product.getStockQuantity())
+        .imageUrl(product.getImageUrl())
+        .isActive(product.getIsActive())
+        .price(product.getPrice())
+        .cartItems(mapToList(product.getCartItems(), c -> {
+          return CartShoppingResponse.builder()
+              .id(c.getId().toString())
+              .name(c.getProduct().getName())
+              .quantity(c.getQuantity())
+              .price(c.getProduct().getPrice())
+              .subTotal(product.getPrice().multiply(BigDecimal.valueOf(c.getQuantity())))
+              .addedAt(c.getAddedAt())
+              .build();
+        }))
+        .createdDate(product.getCreatedAt())
+        .build();
+
     return object;
   }
 
   @Transactional(readOnly = true)
   public Page<ProductShoppingResponse> retrieveAllProduct(Pageable pageable) {
     Page<Product> product = productRepo.retrieveProduct(pageable);
-    List<ProductShoppingResponse> content = product.stream()
-        .map(p -> {
-          return new ProductShoppingResponse(p.getId().toString(), p.getName(), p.getStockQuantity(),
-              p.getImageUrl(), p.getIsActive(), p.getPrice(), p.getCreatedAt());
-        })
-        .toList();
+    List<ProductShoppingResponse> content = mapToList(product.getContent(), p -> {
+      if (p.getCartItems().isEmpty()) {
+        return ProductShoppingResponse.builder()
+            .id(p.getId().toString())
+            .name(p.getName())
+            .stockQuantity(p.getStockQuantity())
+            .imageUrl(p.getImageUrl())
+            .isActive(p.getIsActive())
+            .price(p.getPrice())
+            .createdDate(p.getCreatedAt())
+            .build();
+      }
+
+      var cart = mapToList(p.getCartItems(), c -> {
+        return CartShoppingResponse.builder()
+            .id(c.getId().toString())
+            .name(c.getProduct().getName())
+            .quantity(c.getQuantity())
+            .price(c.getProduct().getPrice())
+            .subTotal(p.getPrice().multiply(BigDecimal.valueOf(c.getQuantity())))
+            .addedAt(c.getAddedAt())
+            .build();
+      });
+
+      return ProductShoppingResponse.builder()
+          .id(p.getId().toString())
+          .name(p.getName())
+          .stockQuantity(p.getStockQuantity())
+          .imageUrl(p.getImageUrl())
+          .isActive(p.getIsActive())
+          .price(p.getPrice())
+          .cartItems(cart)
+          .createdDate(p.getCreatedAt())
+          .build();
+    });
     return new PageImpl<>(content, pageable, product.getTotalElements());
   }
 
@@ -111,7 +170,7 @@ public class ShoppingCartService {
   public CartShoppingResponse addingProductToCart(CartShoppingRequest request) {
     Product product = getProductById(request.productId());
     Cart cart = new Cart();
-    Long subtotal = (Long) product.getPrice().longValue() * request.quantity();
+    BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(request.quantity()));
 
     cart.setQuantity(request.quantity());
     cart.setAddedAt(request.addedAt());
@@ -124,7 +183,7 @@ public class ShoppingCartService {
         .name(saved.getProduct().getName())
         .quantity(saved.getQuantity())
         .price(saved.getProduct().getPrice())
-        .subTotal(BigDecimal.valueOf(subtotal))
+        .subTotal(subtotal)
         .addedAt(saved.getAddedAt())
         .build();
     return object;
@@ -155,5 +214,12 @@ public class ShoppingCartService {
     Product product = productRepo.findById(uuid)
         .orElseThrow(() -> new ResourceNotFoundException("data not found with id " + id));
     return product;
+  }
+
+  private <T, R> List<R> mapToList(List<T> source, Function<T, R> mapper) {
+    if (source == null || source.isEmpty()) {
+      return Collections.emptyList();
+    }
+    return source.stream().map(mapper).toList();
   }
 }
