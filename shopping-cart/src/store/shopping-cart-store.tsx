@@ -19,6 +19,7 @@ function shoppingCartReducer(state: ShoppingCartState, action: ShoppingCartPaylo
 
     const index = state.cartItems.findIndex(item => item.id === objectPayload.id);
 
+    // add product to cart if not already added
     if (index === -1) {
       return {
         ...state,
@@ -27,6 +28,7 @@ function shoppingCartReducer(state: ShoppingCartState, action: ShoppingCartPaylo
       }
     }
 
+    // update quantity if product already added
     const newCartItems = state.cartItems.map(item => {
       if (item.id === objectPayload.id) {
         return {

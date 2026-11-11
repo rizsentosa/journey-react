@@ -1,11 +1,11 @@
 import noProjectImg from "@/assets/no-projects.png";
 import Button from "./Button";
+import { useContext } from "react";
+import { ManagementTodoStore } from "@/store/data-context";
 
-type NoProjectSelectedProps = {
-  onStartAddProject: () => void;
-}
 
-export default function NoProjectSelected({ onStartAddProject }: NoProjectSelectedProps) {
+export default function NoProjectSelected() {
+  const { onStartAddProject } = useContext(ManagementTodoStore);
   return (
     <div className="mt-24 text-center w-2/3">
       <img src={noProjectImg} alt="no-project-selected" className="w-16 h-16 object-contain mx-auto" />

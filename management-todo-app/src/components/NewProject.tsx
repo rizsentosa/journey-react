@@ -1,12 +1,11 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import Input from "./Input";
 import Modal from "./Modal";
-type TNewProjectProps = {
-  onAdd: (project: { title: string, description: string, createdAt: string }) => void,
-  onCancel: () => void
-};
+import { ManagementTodoStore } from "@/store/data-context";
+export default function NewProject() {
 
-export default function NewProject({ onAdd, onCancel }: TNewProjectProps) {
+  const { onAddProject, onCancelAddProject } = useContext(ManagementTodoStore);
+
   const modal = useRef<{ open: () => void }>(null);
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -29,7 +28,7 @@ export default function NewProject({ onAdd, onCancel }: TNewProjectProps) {
     }
 
     // valdation later
-    onAdd({ title: enteredTitle, description: enteredDescription, createdAt: enteredDuedate });
+    onAddProject({ title: enteredTitle, description: enteredDescription, createdAt: enteredDuedate });
 
   }
 
@@ -42,7 +41,7 @@ export default function NewProject({ onAdd, onCancel }: TNewProjectProps) {
       </Modal>
       <div className="w-140 mt-16">
         <menu className="flex items-center justify-end gap-4 my-4">
-          <li><button onClick={onCancel} className="text-stone-800 hover:text-stone-950">cancel</button></li>
+          <li><button onClick={onCancelAddProject} className="text-stone-800 hover:text-stone-950">cancel</button></li>
           <li><button className="px-6 py-2 rounded-md bg-stone-800 text-stone-50 hover:bg-stone-950" onClick={handleSave}>save</button></li>
         </menu>
         <div>
