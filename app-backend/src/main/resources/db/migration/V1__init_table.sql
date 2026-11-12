@@ -1,4 +1,19 @@
--- Active: 1793622264550@@127.0.0.1@5439@app_db@public
+BEGIN;
+
+CREATE TABLE todo_management (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    title VARCHAR(150) NOT NULL,
+    description TEXT,
+    due_date DATE
+);
+
+CREATE TABLE task_todo (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    todo_id UUID NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    CONSTRAINT fk_task_todo FOREIGN KEY (todo_id) REFERENCES todo_management (id)
+);
+
 CREATE TABLE products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
     name VARCHAR(150) NOT NULL,
@@ -8,7 +23,7 @@ CREATE TABLE products (
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-)
+);
 
 CREATE TABLE carts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
@@ -16,4 +31,6 @@ CREATE TABLE carts (
     quantity INT NOT NULL DEFAULT 1 CHECK (quantity > 0),
     added_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_carts_to_products FOREIGN KEY (product_id) REFERENCES products (id)
-)
+);
+
+COMMIT;
