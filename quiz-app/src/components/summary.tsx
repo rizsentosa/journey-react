@@ -10,6 +10,7 @@ export default function Summary({ userAnswers }: Props) {
   const skippedAnswersShare = Math.round((skippedAnswer.length / userAnswers.length) * 100);
   const correctAnswersShare = Math.round((correctAnswer.length / userAnswers.length) * 100);
   const wrongAnswersShare = 100 - skippedAnswersShare - correctAnswersShare;
+
   return (
     <div id="summary">
       <img src={summaryImg} alt="summary image" />

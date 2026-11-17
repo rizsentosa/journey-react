@@ -17,7 +17,7 @@ const Modal = function Modal({ children, open, onClose }: TProps) {
   }, [open])
   return createPortal(
     <>
-      <dialog ref={dialogRef} className="m-auto w-full max-w-lg backdrop:bg-stone-900/90 p-4 rounded-md shadow-md bg-slate-200" onClose={onClose}>
+      <dialog ref={dialogRef} className="m-auto w-full max-w-lg backdrop:bg-stone-900/90 p-1 rounded-md shadow-md bg-slate-200" onClose={onClose}>
         {open ? children : null}
       </dialog>
     </>,

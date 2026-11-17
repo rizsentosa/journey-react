@@ -19,7 +19,7 @@ function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
   return d;
 }
 
-export function sortPlacesByDistance(places: TAvailablePlace[], lat: number, lon: number) {
+export function sortPlacesByDistance(places: TAvailablePlace[], lat: number, lon: number)  {
   const sortedPlaces = [...places];
   sortedPlaces.sort((a, b) => {
     const distanceA = calculateDistance(lat, lon, a.lat, a.lon);
