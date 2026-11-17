@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import comrizsentosa.app.util.UlidGenerated;
@@ -19,7 +20,8 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "teacher")
-@SQLRestriction(value = "deleted_at is null")
+@SQLDelete(sql = "UPDATE teacher SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Builder
 @Getter
 @Setter
@@ -62,10 +64,10 @@ public class Teacher {
   @Column(nullable = true, length = 150)
   private String image;
 
-  @Column(name = "created_at")
+  @Column(name = "created_at", insertable = false, updatable = false)
   private Instant createdAt;
 
-  @Column(name = "updated_at")
+  @Column(name = "updated_at", insertable = false, updatable = false)
   private Instant updatedAt;
 
   @OneToMany(mappedBy = "teacherEducation", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
